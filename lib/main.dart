@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'theme/theme_bloc.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -11,13 +13,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Event Payload',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return BlocProvider<ThemeBloc>(
+      create: (context) => ThemeBloc(),
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'Event Payload',
+            debugShowCheckedModeBanner: false,
+            theme: state.appTheme == AppTheme.light ? ThemeData.light() : ThemeData.dark(),
+            home: const MyHomePage(),
+          );
+        },
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -40,6 +47,8 @@ class MyHomePage extends StatelessWidget {
           onPressed: () {
             final int randInt = Random().nextInt(10);
             print('randInt: $randInt');
+
+            context.read<ThemeBloc>().add(ChangeThemeEvent(randInt: randInt));
           },
         ),
       ),
