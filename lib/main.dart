@@ -8,6 +8,27 @@ void main() {
   runApp(const MyApp());
 }
 
+// class MyApp extends StatelessWidget {
+//   const MyApp({Key? key}) : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return BlocProvider<ThemeBloc>(
+//       create: (context) => ThemeBloc(),
+//       child: BlocBuilder<ThemeBloc, ThemeState>(
+//         builder: (context, state) {
+//           return MaterialApp(
+//             title: 'Event Payload',
+//             debugShowCheckedModeBanner: false,
+//             theme: state.appTheme == AppTheme.light ? ThemeData.light() : ThemeData.dark(),
+//             home: const MyHomePage(),
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -15,19 +36,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<ThemeBloc>(
       create: (context) => ThemeBloc(),
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
-          return MaterialApp(
-            title: 'Event Payload',
-            debugShowCheckedModeBanner: false,
-            theme: state.appTheme == AppTheme.light ? ThemeData.light() : ThemeData.dark(),
-            home: const MyHomePage(),
-          );
-        },
-      ),
+      child: Builder(builder: (context) {
+        return MaterialApp(
+          title: 'Event Payload',
+          debugShowCheckedModeBanner: false,
+          // context: build 함수의 context
+          theme: context.watch<ThemeBloc>().state.appTheme == AppTheme.light
+              ? ThemeData.light()
+              : ThemeData.dark(),
+          home: const MyHomePage(),
+        );
+      }),
     );
   }
 }
+
 
 class MyHomePage extends StatelessWidget {
   const MyHomePage({Key? key}) : super(key: key);
